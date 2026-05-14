@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Lirié v1.0</title>
+    <title>Motor Lirié v1.2</title>
     <style>
         :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -13,8 +13,8 @@
         .search-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
         .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .word { font-size: 32px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; }
-        .meaning { font-style: italic; color: #aaa; margin-top: 5px; }
+        .word { font-size: 28px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; line-height: 1.2; }
+        .meaning { font-style: italic; color: #aaa; margin-top: 10px; font-size: 14px; }
         .footer { margin-top: 40px; font-size: 10px; color: #555; text-align: center; line-height: 1.5; }
     </style>
 </head>
@@ -22,81 +22,85 @@
 
 <div class="container">
     <h1>Lirié App</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="Busca en español (ej: Dios, Fuego)..." oninput="buscar()">
+    <input type="text" id="searchInput" class="search-box" placeholder="Escribe una oración (ej: Dios luz fuego)..." oninput="buscar()">
     
     <div id="result" class="result-card">
         <p class="label" id="statusLabel">Traducción de Ley</p>
-        <p id="lirieWord" class="word">---</p>
+        <div id="lirieWord" class="word">---</div>
         <p id="spanishMeaning" class="meaning">Escribe para empezar</p>
     </div>
 
     <div class="footer">
-        DICCIONARIO DE 12 MÓDULOS<br>
-        SISTEMA AMSTARSH | SIN PUBLICIDAD
+        SISTEMA AMSTARSH | TRADUCTOR DE ORACIONES<br>
+        PROYECTO MA-LUMIN | SIN PUBLICIDAD
     </div>
 </div>
 
 <script>
-    // Base de datos (Módulos 4-12)
     const diccionario = [
+        // COPIA AQUÍ TUS PALABRAS SIEMPRE
         {es: "dios", li: "ELOH", mod: "Sagrado"},
         {es: "palabra", li: "LOG", mod: "Sagrado"},
         {es: "luz", li: "AUR", mod: "Sagrado"},
         {es: "pacto", li: "BER", mod: "Sagrado"},
+        {es: "verdad", li: "EMET", mod: "Sagrado"},
         {es: "fuego", li: "ESH", mod: "Elementos"},
         {es: "agua", li: "MAY", mod: "Elementos"},
-        {es: "sangre", li: "DAM", mod: "Anatomía"},
-        {es: "corazón", li: "LEV", mod: "Anatomía"},
-        {es: "ojo", li: "AIN", mod: "Anatomía"},
-        {es: "mano", li: "YAD", mod: "Anatomía"},
-        {es: "alma", li: "NEF", mod: "Anatomía"},
-        {es: "rayo", li: "BARK", mod: "Mitos"},
-        {es: "estrella", li: "KOK", mod: "Mitos"},
-        {es: "ciudad", li: "IR", mod: "Civilización"},
+        {es: "hielo", li: "KERET", mod: "Elementos"},
+        {es: "viento", li: "RUAH", mod: "Elementos"},
+        {es: "oscuridad", li: "NOX", mod: "Elementos"},
+        {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
+        {es: "maestro", li: "BVAR", mod: "Jerarquía"},
         {es: "rey", li: "MALK", mod: "Civilización"},
-                // MA-LUMIN Y TECNOLOGÍA LOGICA
+        {es: "espada", li: "JEREV", mod: "Civilización"},
         {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
         {es: "sistema", li: "SEDER", mod: "Lógica"},
-        {es: "memoria", li: "ZIK", mod: "Lógica"},
-        {es: "conexión", li: "KAS", mod: "Lógica"},
-        
-        // NOMBRES Y TÍTULOS
         {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
         {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
-        {es: "babby gold", li: "ZELUAN-ORIGIN", mod: "Protecters"},
-        {es: "nomlos", li: "REPRESENTANTE", mod: "Personajes"},
-        
-        // ESTADOS DE PODER
-        {es: "activo", li: "JAY-ON", mod: "Estados"},
-        {es: "bloqueado", li: "ASUR", mod: "Estados"},
-        {es: "despertar", li: "KUM", mod: "Estados"}
-
+        {es: "despertar", li: "KUM", mod: "Estados"},
+        {es: "luchar", li: "LAHAM", mod: "Acciones"},
+        {es: "crear", li: "BARA", mod: "Acciones"}
     ];
 
     function buscar() {
-        // Normalizamos la búsqueda (minúsculas y sin espacios locos)
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const displayLi = document.getElementById('lirieWord');
         const displayEs = document.getElementById('spanishMeaning');
         const statusLabel = document.getElementById('statusLabel');
         
-        const resultado = diccionario.find(item => item.es === query);
-
-        if (resultado) {
-            statusLabel.innerText = "Traducción de Ley";
-            statusLabel.style.color = "#888";
-            displayLi.innerText = resultado.li;
-            displayEs.innerText = `${resultado.es.toUpperCase()} (${resultado.mod})`;
-        } else if (query === "") {
+        if (query === "") {
             statusLabel.innerText = "Traducción de Ley";
             displayLi.innerText = "---";
             displayEs.innerText = "Escribe para empezar";
-        } else {
-            statusLabel.innerText = "Palabra en desarrollo";
-            statusLabel.style.color = "#555";
-            displayLi.innerText = "???";
-            displayEs.innerText = "No encontrada en los módulos";
+            return;
         }
+
+        // DIVIDIR LA FRASE EN PALABRAS
+        const palabrasInput = query.split(/\s+/);
+        let resultadoLirie = [];
+        let modulosUsados = new Set();
+
+        palabrasInput.forEach(palabra => {
+            // Buscamos la palabra en el diccionario
+            const encontrado = diccionario.find(item => item.es === palabra);
+            
+            if (encontrado) {
+                resultadoLirie.push(encontrado.li);
+                modulosUsados.add(encontrado.mod);
+            } else {
+                // Si no existe, la mostramos en minúscula para saber que falta
+                resultadoLirie.push(`(${palabra})`);
+            }
+        });
+
+        // ACTUALIZAR PANTALLA
+        statusLabel.innerText = "Oración Lirié";
+        displayLi.innerText = resultadoLirie.join(" ");
+        
+        const mods = Array.from(modulosUsados);
+        displayEs.innerText = mods.length > 0 
+            ? "Módulos activos: " + mods.join(", ") 
+            : "Palabra no encontrada en los módulos";
     }
 </script>
 
