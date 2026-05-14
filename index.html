@@ -9,11 +9,11 @@
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 500px; width: 100%; }
         h1 { color: var(--gold); text-align: center; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
-        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; }
-        .search-box:focus { border-color: var(--gold); }
-        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 100px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .search-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
+        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .word { font-size: 32px; font-weight: bold; color: var(--gold); margin: 0; }
+        .word { font-size: 32px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; }
         .meaning { font-style: italic; color: #aaa; margin-top: 5px; }
         .footer { margin-top: 40px; font-size: 10px; color: #555; text-align: center; line-height: 1.5; }
     </style>
@@ -25,7 +25,7 @@
     <input type="text" id="searchInput" class="search-box" placeholder="Busca en español (ej: Dios, Fuego)..." oninput="buscar()">
     
     <div id="result" class="result-card">
-        <p class="label">Traducción de Ley</p>
+        <p class="label" id="statusLabel">Traducción de Ley</p>
         <p id="lirieWord" class="word">---</p>
         <p id="spanishMeaning" class="meaning">Escribe para empezar</p>
     </div>
@@ -37,7 +37,7 @@
 </div>
 
 <script>
-    // Tu base de datos interna (Módulos 4-12)
+    // Base de datos (Módulos 4-12)
     const diccionario = [
         {es: "dios", li: "ELOH", mod: "Sagrado"},
         {es: "palabra", li: "LOG", mod: "Sagrado"},
@@ -57,21 +57,28 @@
     ];
 
     function buscar() {
+        // Normalizamos la búsqueda (minúsculas y sin espacios locos)
         const query = document.getElementById('searchInput').value.toLowerCase().trim();
         const displayLi = document.getElementById('lirieWord');
         const displayEs = document.getElementById('spanishMeaning');
+        const statusLabel = document.getElementById('statusLabel');
         
         const resultado = diccionario.find(item => item.es === query);
 
         if (resultado) {
+            statusLabel.innerText = "Traducción de Ley";
+            statusLabel.style.color = "#888";
             displayLi.innerText = resultado.li;
             displayEs.innerText = `${resultado.es.toUpperCase()} (${resultado.mod})`;
         } else if (query === "") {
+            statusLabel.innerText = "Traducción de Ley";
             displayLi.innerText = "---";
             displayEs.innerText = "Escribe para empezar";
         } else {
+            statusLabel.innerText = "Palabra en desarrollo";
+            statusLabel.style.color = "#555";
             displayLi.innerText = "???";
-            displayEs.innerText = "No encontrado en los módulos";
+            displayEs.innerText = "No encontrada en los módulos";
         }
     }
 </script>
