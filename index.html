@@ -38,7 +38,7 @@
 
 <script>
     const diccionario = [
-        // COPIA AQUÍ TUS PALABRAS SIEMPRE
+        // --- SAGRADO Y ELEMENTOS ---
         {es: "dios", li: "ELOH", mod: "Sagrado"},
         {es: "palabra", li: "LOG", mod: "Sagrado"},
         {es: "luz", li: "AUR", mod: "Sagrado"},
@@ -49,31 +49,23 @@
         {es: "hielo", li: "KERET", mod: "Elementos"},
         {es: "viento", li: "RUAH", mod: "Elementos"},
         {es: "oscuridad", li: "NOX", mod: "Elementos"},
+        
+        // --- JERARQUÍA Y PERSONAJES ---
         {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
         {es: "maestro", li: "BVAR", mod: "Jerarquía"},
         {es: "rey", li: "MALK", mod: "Civilización"},
         {es: "espada", li: "JEREV", mod: "Civilización"},
-        {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
-        {es: "sistema", li: "SEDER", mod: "Lógica"},
         {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
         {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
+        
+        // --- LÓGICA MA-LUMIN ---
+        {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
+        {es: "sistema", li: "SEDER", mod: "Lógica"},
         {es: "despertar", li: "KUM", mod: "Estados"},
         {es: "luchar", li: "LAHAM", mod: "Acciones"},
         {es: "crear", li: "BARA", mod: "Acciones"},
-                // CONECTORES Y FLUIDEZ
-        {es: "hola", li: "SHAL", mod: "Social"},
-        {es: "es", li: "VET", mod: "Gramática"},
-        {es: "un", li: "DA", mod: "Gramática"},
-        {es: "el", li: "HA", mod: "Gramática"},
-        {es: "la", li: "HA", mod: "Gramática"},
-        {es: "y", li: "VE", mod: "Gramática"},
-        {es: "mi", li: "ANI", mod: "Gramática"},
-        {es: "amor", li: "AHAV", mod: "Sentimientos"},
-        {es: "paz", li: "SHALOM", mod: "Sentimientos"},
-        {es: "gracias", li: "TODA", mod: "Social"},
-        {es: "yo", li: "ANOKI", mod: "Persona"},
-        {es: "soy", li: "VET-ANI", mod: "Persona"},
-                // CONECTORES Y FLUIDEZ
+        
+        // --- CONECTORES Y SENTIMIENTOS (PACK DE FLUIDEZ) ---
         {es: "hola", li: "SHAL", mod: "Social"},
         {es: "es", li: "VET", mod: "Gramática"},
         {es: "un", li: "DA", mod: "Gramática"},
@@ -86,11 +78,10 @@
         {es: "gracias", li: "TODA", mod: "Social"},
         {es: "yo", li: "ANOKI", mod: "Persona"},
         {es: "soy", li: "VET-ANI", mod: "Persona"}
-
     ];
 
     function buscar() {
-        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const query = document.getElementById('searchInput').value.trim();
         const displayLi = document.getElementById('lirieWord');
         const displayEs = document.getElementById('spanishMeaning');
         const statusLabel = document.getElementById('statusLabel');
@@ -102,20 +93,22 @@
             return;
         }
 
+        // Función interna para limpiar tildes y mayúsculas
+        const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
         // DIVIDIR LA FRASE EN PALABRAS
         const palabrasInput = query.split(/\s+/);
         let resultadoLirie = [];
         let modulosUsados = new Set();
 
         palabrasInput.forEach(palabra => {
-            // Buscamos la palabra en el diccionario
-            const encontrado = diccionario.find(item => item.es === palabra);
+            // BUSCADOR INTELIGENTE: Compara la palabra limpia con el diccionario limpio
+            const encontrado = diccionario.find(item => limpiar(item.es) === limpiar(palabra));
             
             if (encontrado) {
                 resultadoLirie.push(encontrado.li);
                 modulosUsados.add(encontrado.mod);
             } else {
-                // Si no existe, la mostramos en minúscula para saber que falta
                 resultadoLirie.push(`(${palabra})`);
             }
         });
