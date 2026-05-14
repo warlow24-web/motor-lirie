@@ -3,49 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INYECTOR AMSTARSH</title>
+    <title>INYECTOR MA-LUMIN - CONSOLA DE DATOS</title>
     <style>
-        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; --border: #333; }
-        .light-mode { --bg: #f5f5f5; --card: #ffffff; --text: #1a1a1a; --border: #ddd; --gold: #b8860b; }
+        :root { --gold: #d4af37; --bg: #050505; --card: #111; --text: #e0e0e0; --accent: #222; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 600px; width: 100%; }
         
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; transition: 0.3s; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { max-width: 600px; width: 100%; position: relative; }
+        h1 { color: var(--gold); text-align: center; font-size: 18px; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 30px; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
         
-        .theme-toggle { position: absolute; top: 0; right: 0; cursor: pointer; background: var(--card); border: 1px solid var(--gold); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
-        
-        .admin-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-top: 20px; }
-        input, textarea { width: 100%; padding: 10px; margin-top: 10px; background: var(--bg); border: 1px solid var(--border); color: var(--text); box-sizing: border-box; }
-        .btn { background: var(--gold); color: white; border: none; padding: 15px; width: 100%; margin-top: 20px; cursor: pointer; font-weight: bold; }
-        .output { background: #000; color: #0f0; padding: 15px; margin-top: 20px; font-family: monospace; font-size: 12px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: var(--card); border: 1px solid var(--accent); color: #666; cursor: pointer; border-radius: 5px; font-size: 10px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .tab-btn.active { border-color: var(--gold); color: var(--gold); background: #1a1a1a; }
+
+        .form-section { background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--accent); display: none; }
+        .form-section.active { display: block; animation: fadeIn 0.5s ease; }
+
+        label { display: block; color: var(--gold); font-size: 11px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
+        input, textarea, select { width: 100%; padding: 12px; background: #000; border: 1px solid var(--accent); color: #fff; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--gold); }
+
+        .gen-btn { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
+        .gen-btn:hover { background: #b8860b; }
+
+        .output-area { margin-top: 25px; }
+        .output-box { width: 100%; height: 150px; background: #000; color: #0f0; font-family: 'Courier New', monospace; font-size: 12px; padding: 15px; border: 1px dashed var(--gold); border-radius: 5px; box-sizing: border-box; }
+        .copy-hint { font-size: 10px; color: #555; margin-top: 5px; text-align: center; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .back-link { display: block; text-align: center; margin-top: 30px; color: var(--gold); text-decoration: none; font-size: 12px; opacity: 0.6; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="theme-toggle" onclick="toggleTheme()">🌓</div>
-        <h1 style="text-align:center; color:var(--gold);">INYECTOR V1.2</h1>
-        <a href="index.html" style="display:block; text-align:center; color:#888; text-decoration:none; font-size:10px;">[ VOLVER A LA INTERFACE ]</a>
 
-        <div class="admin-card">
-            <input type="text" id="c-titulo" placeholder="Nombre del Amstarsh">
-            <textarea id="c-lore" rows="4" placeholder="Historia..."></textarea>
-            <button class="btn" onclick="generar()">GENERAR CÓDIGO</button>
-        </div>
-        <div id="output" class="output">El código aparecerá aquí...</div>
+<div class="container">
+    <h1>Inyector de Datos v2.0</h1>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showForm('palabra')">Diccionario</button>
+        <button class="tab-btn" onclick="showForm('personaje')">Amstarsh</button>
+        <button class="tab-btn" onclick="showForm('historia')">Historia</button>
     </div>
 
-    <script>
-        function toggleTheme() {
-            document.body.classList.toggle('light-mode');
-            localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-        }
-        if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
+    <!-- MÓDULO 1: DICCIONARIO -->
+    <div id="f-palabra" class="form-section active">
+        <label>Español</label>
+        <input type="text" id="es-word" placeholder="ej: Fuego">
+        <label>Lirié</label>
+        <input type="text" id="li-word" placeholder="ej: IGNIS-LIS">
+        <button class="gen-btn" onclick="genPalabra()">Generar Código</button>
+    </div>
 
-        function generar() {
-            const t = document.getElementById('c-titulo').value;
-            const l = document.getElementById('c-lore').value;
-            const id = t.toLowerCase();
-            document.getElementById('output').innerText = `"${id}": { titulo: "${t}", lore: "${l}" },`;
-        }
-    </script>
+    <!-- MÓDULO 2: PERSONAJES -->
+    <div id="f-personaje" class="form-section">
+        <label>Nombre del Amstarsh</label>
+        <input type="text" id="p-nombre" placeholder="Nombre completo">
+        <label>Rango / Clase</label>
+        <input type="text" id="p-rango" placeholder="ej: Maestro Protector">
+        <label>Historia y Poderes</label>
+        <textarea id="p-lore" rows="5" placeholder="Detalla su entrenamiento, maestros y habilidades..."></textarea>
+        <button class="gen-btn" onclick="genPersonaje()">Inyectar Perfil</button>
+    </div>
+
+    <!-- MÓDULO 3: HISTORIA -->
+    <div id="f-historia" class="form-section">
+        <label>Título del Archivo</label>
+        <input type="text" id="h-titulo" placeholder="ej: La Guerra de los Elementos">
+        <label>Categoría</label>
+        <select id="h-cat">
+            <option value="CRÓNICA HISTÓRICA">Crónica Histórica</option>
+            <option value="LEY ELEMENTAL">Ley Elemental</option>
+            <option value="GEOGRAFÍA">Geografía / Continente</option>
+        </select>
+        <label>Información Detallada</label>
+        <textarea id="h-info" rows="5" placeholder="Escribe el registro histórico aquí..."></textarea>
+        <button class="gen-btn" onclick="genHistoria()">Inyectar Registro</button>
+    </div>
+
+    <div class="output-area">
+        <label>Código Generado (Copia y Pega en el script principal)</label>
+        <textarea id="result" class="output-box" readonly></textarea>
+        <p class="copy-hint">Copia el bloque verde y pégalo en la sección correspondiente de tu código fuente.</p>
+    </div>
+
+    <a href="index.html" class="back-link">← VOLVER AL VISOR MA-LUMIN</a>
+</div>
+
+<script>
+    function showForm(id) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+        event.target.classList.add('active');
+        document.getElementById('f-' + id).classList.add('active');
+    }
+
+    function genPalabra() {
+        const es = document.getElementById('es-word').value.toLowerCase();
+        const li = document.getElementById('li-word').value.toUpperCase();
+        const code = `{es: "${es}", li: "${li}"},`;
+        document.getElementById('result').value = code;
+    }
+
+    function genPersonaje() {
+        const nom = document.getElementById('p-nombre').value;
+        const ran = document.getElementById('p-rango').value.toUpperCase();
+        const lore = document.getElementById('p-lore').value;
+        const id = nom.toLowerCase().replace(/\s+/g, '_');
+        
+        const code = `"${id}": {
+    titulo: "${nom}",
+    tipo: "${ran}",
+    cuerpo: \`
+        <p>${lore}</p>
+    \`
+},`;
+        document.getElementById('result').value = code;
+    }
+
+    function genHistoria() {
+        const tit = document.getElementById('h-titulo').value;
+        const cat = document.getElementById('h-cat').value;
+        const info = document.getElementById('h-info').value;
+        const id = tit.toLowerCase().replace(/\s+/g, '_');
+
+        const code = `"${id}": {
+    titulo: "${tit}",
+    tipo: "${cat}",
+    cuerpo: \`
+        <div style="border-left: 2px solid var(--gold); padding-left: 15px;">
+            <p>${info}</p>
+        </div>
+    \`
+},`;
+        document.getElementById('result').value = code;
+    }
+</script>
+
 </body>
 </html>
