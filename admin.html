@@ -3,25 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inyector Ma-lumin v1.0</title>
+    <title>Inyector Ma-lumin v1.1</title>
     <style>
         :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 600px; width: 100%; }
+        
+        /* BOTÓN DE RETORNO */
+        .back-link { display: block; text-align: center; color: #666; font-size: 10px; text-decoration: none; margin-bottom: 15px; letter-spacing: 2px; transition: 0.3s; text-transform: uppercase; }
+        .back-link:hover { color: var(--gold); }
+
         .admin-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); margin-bottom: 20px; }
-        h1 { color: var(--gold); font-size: 18px; text-transform: uppercase; text-align: center; }
+        h1 { color: var(--gold); font-size: 18px; text-transform: uppercase; text-align: center; margin-top: 0; }
         label { display: block; font-size: 12px; color: var(--gold); margin-top: 10px; text-transform: uppercase; }
-        input, textarea, select { width: 100%; padding: 10px; background: #111; border: 1px solid #444; color: white; border-radius: 5px; margin-top: 5px; box-sizing: border-box; }
-        .btn { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        input, textarea, select { width: 100%; padding: 10px; background: #111; border: 1px solid #444; color: white; border-radius: 5px; margin-top: 5px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--gold); }
+        .btn { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; text-transform: uppercase; }
         .output-area { background: #000; color: #0f0; font-family: monospace; padding: 15px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; word-break: break-all; margin-top: 20px; border: 1px solid #0f0; }
         .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
-        .tab { flex: 1; text-align: center; padding: 10px; background: #222; cursor: pointer; border-radius: 5px; font-size: 12px; }
+        .tab { flex: 1; text-align: center; padding: 10px; background: #222; cursor: pointer; border-radius: 5px; font-size: 12px; font-weight: bold; }
         .tab.active { background: var(--gold); color: black; }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <!-- PORTAL DE RETORNO A LA APP PRINCIPAL -->
+    <a href="index.html" class="back-link">[ Volver a la Interface ]</a>
+
     <h1>Inyector de Datos Amstarsh</h1>
     
     <div class="tabs">
@@ -42,28 +51,28 @@
 
     <!-- MODO CÓDICE -->
     <div id="form-codice" class="admin-card" style="display:none;">
-        <label>Nombre Identificador (ID)</label>
+        <label>ID de Búsqueda (minúsculas)</label>
         <input type="text" id="c-id" placeholder="ej: alistar">
-        <label>Título Real</label>
+        <label>Título Visible</label>
         <input type="text" id="c-titulo" placeholder="ej: Alistar el Grande">
         <label>Tipo de Registro</label>
         <select id="c-tipo">
-            <option value="PERSONA">PERSONA</option>
-            <option value="LUGAR">LUGAR</option>
-            <option value="OBJETO">OBJETO</option>
-            <option value="HISTORIA">HISTORIA</option>
+            <option value="PERSONA">PERSONA / AMSTARSH</option>
+            <option value="LUGAR">LUGAR / CIUDAD</option>
+            <option value="OBJETO">OBJETO / ARMA</option>
+            <option value="HISTORIA">HISTORIA / LORE</option>
         </select>
-        <label>Dato 1 (Elemento / Categoría)</label>
+        <label id="label-d1">Dato 1 (Elemento)</label>
         <input type="text" id="c-d1" placeholder="ej: Hielo">
-        <label>Dato 2 (Rango / Ubicación)</label>
+        <label id="label-d2">Dato 2 (Rango)</label>
         <input type="text" id="c-d2" placeholder="ej: Protector 05">
-        <label>Historia / Lore</label>
-        <textarea id="c-lore" rows="4" placeholder="Escribe aquí la historia..."></textarea>
+        <label>Lore / Historia Detallada</label>
+        <textarea id="c-lore" rows="5" placeholder="Escribe aquí la historia..."></textarea>
         <button class="btn" onclick="generarCodice()">Generar Código</button>
     </div>
 
     <div id="output" class="output-area">El código generado aparecerá aquí...</div>
-    <p style="font-size: 10px; color: #666; text-align: center; margin-top: 10px;">Copia el código y pégalo dentro de la lista correspondiente en tu App principal.</p>
+    <p style="font-size: 10px; color: #666; text-align: center; margin-top: 10px;">Copia el código y pégalo en la lista de tu App principal.</p>
 </div>
 
 <script>
@@ -93,7 +102,13 @@
         const d2 = document.getElementById('c-d2').value;
         const lore = document.getElementById('c-lore').value;
 
-        const codigo = `"${id}": { \n  tipo: "${tipo}", titulo: "${titulo}", \n  d1: "${d1}", d2: "${d2}", label1: "Dato A", label2: "Dato B", \n  lore: "${lore}" \n},`;
+        // Lógica inteligente para etiquetas
+        let l1 = "Dato A", l2 = "Dato B";
+        if(tipo === "PERSONA") { l1 = "Elemento"; l2 = "Rango"; }
+        else if(tipo === "LUGAR") { l1 = "Categoría"; l2 = "Ubicación"; }
+        else if(tipo === "OBJETO") { l1 = "Poder"; l2 = "Estado"; }
+
+        const codigo = `"${id}": { \n  tipo: "${tipo}", titulo: "${titulo}", \n  d1: "${d1}", d2: "${d2}", label1: "${l1}", label2: "${l2}", \n  lore: "${lore.replace(/\n/g, ' ')}" \n},`;
         document.getElementById('output').innerText = codigo;
     }
 </script>
