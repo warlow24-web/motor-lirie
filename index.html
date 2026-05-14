@@ -2,114 +2,182 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MA-LUMIN - CÓDICE JERÁRQUICO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEMA MA-LUMIN v2.8 - CÓDICE LIRIÉ</title>
     <style>
-        /* VARIABLES DINÁMICAS */
         :root {
-            --bg: #121212;
-            --card: #1e1e1e;
-            --text: #e0e0e0;
             --gold: #d4af37;
+            --bg: #0d0d0d;
+            --card: #1a1a1a;
+            --text: #e0e0e0;
             --glow: rgba(255, 255, 255, 0.4);
             --border: #333;
         }
 
-        /* CLASE PARA MODO CLARO (VICEVERSA) */
         .light-mode {
-            --bg: #f5f5f5;
+            --bg: #f0f0f0;
             --card: #ffffff;
-            --text: #222222;
-            --gold: #b8860b; /* Un dorado más profundo para fondo claro */
-            --glow: rgba(0, 0, 0, 0.2); /* Sombra oscura para que resalte en blanco */
-            --border: #ddd;
+            --text: #1a1a1a;
+            --gold: #b8860b;
+            --glow: rgba(0, 0, 0, 0.2);
+            --border: #ccc;
         }
 
         body { 
-            background: var(--bg); color: var(--text); 
-            font-family: 'Segoe UI', sans-serif; transition: 0.3s;
-            margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center;
+            background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; 
+            margin: 0; padding: 20px; transition: 0.3s; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* BOTÓN DE CAMBIO DE MODO */
-        .theme-toggle {
-            align-self: flex-end; padding: 10px 20px; border-radius: 20px;
-            border: 1px solid var(--gold); background: var(--card);
-            color: var(--gold); cursor: pointer; font-weight: bold;
-            text-shadow: 0 0 5px var(--glow); margin-bottom: 20px;
-        }
+        .container { max-width: 700px; width: 100%; }
 
-        .container { width: 100%; max-width: 800px; }
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { color: var(--gold); text-shadow: 0 0 12px var(--glow); letter-spacing: 6px; text-transform: uppercase; margin: 0; font-size: 22px; }
         
-        h1 { 
-            color: var(--gold); text-shadow: 0 0 10px var(--glow);
-            text-align: center; letter-spacing: 5px; text-transform: uppercase;
+        .top-bar { display: flex; justify-content: space-between; margin-bottom: 20px; width: 100%; }
+        .btn-ui { 
+            padding: 10px 15px; background: var(--card); border: 1px solid var(--gold); 
+            color: var(--gold); cursor: pointer; border-radius: 6px; font-weight: bold; font-size: 10px;
+            text-transform: uppercase; text-shadow: 0 0 5px var(--glow); transition: 0.2s;
         }
+        .btn-ui:hover { background: var(--gold); color: #000; text-shadow: none; }
 
-        /* ESTRUCTURA DE DESPLEGABLES */
-        .desplegable { margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+        /* --- MÓDULO INYECTOR --- */
+        .inyector-box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        h3 { color: var(--gold); margin-top: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        
+        label { display: block; color: var(--gold); font-size: 10px; margin: 12px 0 5px; text-transform: uppercase; font-weight: bold; }
+        input, textarea, select { width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; box-sizing: border-box; outline: none; }
+        input:focus { border-color: var(--gold); }
 
-        .header-oro {
-            width: 100%; padding: 18px; background: rgba(0,0,0,0.05);
-            color: var(--gold); text-shadow: 0 0 8px var(--glow);
-            border: none; cursor: pointer; font-weight: bold;
-            text-transform: uppercase; text-align: left; font-size: 14px;
+        .gen-btn { width: 100%; padding: 15px; background: var(--gold); color: #000; border: none; margin-top: 15px; border-radius: 6px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; }
+
+        /* --- LOS 3 DESPLEGABLES (CÓDICE) --- */
+        .desplegable { margin-bottom: 12px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--card); }
+        .header-oro { 
+            width: 100%; padding: 18px; background: transparent; color: var(--gold); 
+            text-shadow: 0 0 10px var(--glow); text-align: left; border: none; cursor: pointer; 
+            font-weight: bold; text-transform: uppercase; font-size: 13px; letter-spacing: 1px;
+            display: flex; justify-content: space-between;
         }
+        .header-oro:hover { background: rgba(212, 175, 55, 0.05); }
+        
+        .contenido { display: none; padding: 20px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.1); }
+        .show { display: block; animation: fadeIn 0.4s ease; }
 
-        .contenido-oculto { display: none; padding: 20px; border-top: 1px solid var(--border); }
-        .show { display: block !important; }
+        /* --- FICHAS Y DICCIONARIO --- */
+        .ficha-entry { border-left: 3px solid var(--gold); padding: 12px; margin-bottom: 15px; background: rgba(128,128,128,0.05); border-radius: 0 8px 8px 0; }
+        .ficha-entry strong { color: var(--gold); display: block; margin-bottom: 5px; }
+        
+        .output-box { width: 100%; height: 80px; margin-top: 15px; font-family: 'Consolas', monospace; font-size: 11px; background: #000; color: #0f0; border: 1px dashed var(--gold); }
 
-        .ficha { 
-            border-left: 3px solid var(--gold); padding-left: 15px; margin-bottom: 15px; 
-            background: rgba(128,128,128,0.05); padding: 10px; border-radius: 0 5px 5px 0;
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <button class="theme-toggle" onclick="toggleTheme()">CAMBIAR MODO (DÍA/NOCHE)</button>
+<div class="container">
+    <header>
+        <h1>Lirié: MA-LUMIN</h1>
+        <div style="font-size: 9px; letter-spacing: 4px; color: var(--gold); margin-top: 5px;">PROCESADOR DE DATOS UNIVERSAL</div>
+    </header>
 
-    <div class="container">
-        <h1>Lirié: Códice de Jerarquías</h1>
+    <div class="top-bar">
+        <button class="btn-ui" onclick="toggleTheme()">🌓 CAMBIAR MODO</button>
+        <button class="btn-ui" onclick="toggleSec('inyector-ui')">⚙️ ABRIR INYECTOR</button>
+    </div>
 
-        <!-- 1. LOS 16 AMSTARSH -->
-        <div class="desplegable">
-            <button class="header-oro" onclick="toggleSec('sec-16')">▼ PRIMERA JERARQUÍA: LOS 16 AMSTARSH</button>
-            <div id="sec-16" class="contenido-oculto">
-                <div class="ficha">
-                    <strong>Alistar del Hielo:</strong> Maestro Amstarsh del continente Glacia.
-                </div>
-                <!-- Aquí inyectas los demás de los 16 -->
-            </div>
-        </div>
+    <!-- 1. MÓDULO INYECTOR (PARA CARGAR DATOS) -->
+    <div id="inyector-ui" class="inyector-box">
+        <h3>Inyector de Registro</h3>
+        <label>Sección de destino</label>
+        <select id="tipo-data">
+            <option value="16">Los 16 Amstarsh</option>
+            <option value="100">Los 100 Guerreros</option>
+            <option value="otros">Bvorian / Otros</option>
+            <option value="dicc">Diccionario Lirié</option>
+        </select>
+        
+        <label>Título / Nombre</label>
+        <input type="text" id="main-title" placeholder="Ej: Max Maximilian o Palabra en Español">
+        
+        <label>Contenido / Traducción</label>
+        <textarea id="main-content" rows="3" placeholder="Detalles de la ficha o traducción al Lirié..."></textarea>
+        
+        <button class="gen-btn" onclick="inyectarDato()">Inyectar al Códice</button>
+        <textarea id="result-code" class="output-box" readonly placeholder="Código técnico generado..."></textarea>
+    </div>
 
-        <!-- 2. LOS 100 GUERREROS -->
-        <div class="desplegable">
-            <button class="header-oro" onclick="toggleSec('sec-100')">▼ SEGUNDA JERARQUÍA: LOS 100 GUERREROS</button>
-            <div id="sec-100" class="contenido-oculto">
-                <p>Lista de combatientes Liriansh subordinados...</p>
-            </div>
-        </div>
-
-        <!-- 3. BVORIAN Y OTROS -->
-        <div class="desplegable">
-            <button class="header-oro" onclick="toggleSec('sec-otros')">▼ REGISTROS EXTERNOS: BVORIAN Y VARIANTES</button>
-            <div id="sec-otros" class="contenido-oculto">
-                <div class="ficha">
-                    <strong>Bvorian:</strong> Entidad de registro externo.
-                </div>
-            </div>
+    <!-- 2. LOS 3 DESPLEGABLES PRINCIPALES (UNO DEBAJO DEL OTRO) -->
+    
+    <!-- DESPLEGABLE 1: LOS 16 AMSTARSH -->
+    <div class="desplegable">
+        <button class="header-oro" onclick="toggleSec('sec-16')">
+            <span>I. LOS 16 AMSTARSH</span> <span>[+]</span>
+        </button>
+        <div id="sec-16" class="contenido">
+            <div class="ficha-entry"><strong>Alistar del Hielo</strong>Maestro Amstarsh protector del frío eterno.</div>
+            <div class="ficha-entry"><strong>Max Maximilian</strong>Maestro de la Oscuridad y el Vacío.</div>
+            <div class="ficha-entry"><strong>Babby Gold El Dorado</strong>Maestro del Nacimiento y la Biología.</div>
         </div>
     </div>
 
+    <!-- DESPLEGABLE 2: LOS 100 GUERREROS -->
+    <div class="desplegable">
+        <button class="header-oro" onclick="toggleSec('sec-100')">
+            <span>II. LOS 100 GUERREROS</span> <span>[+]</span>
+        </button>
+        <div id="sec-100" class="contenido">
+            <p style="font-size: 11px; opacity: 0.6;">Escuadrones Liriansh en espera de registro...</p>
+        </div>
+    </div>
+
+    <!-- DESPLEGABLE 3: BVORIAN Y OTROS -->
+    <div class="desplegable">
+        <button class="header-oro" onclick="toggleSec('sec-otros')">
+            <span>III. EXTERNOS & VARIANTES</span> <span>[+]</span>
+        </button>
+        <div id="sec-otros" class="contenido">
+            <div class="ficha-entry"><strong>Bvorian</strong>Entidad externa al sistema jerárquico de los 116.</div>
+            <div class="ficha-entry"><strong>Jhanm del Futuro</strong>Variante temporal detectada.</div>
+        </div>
+    </div>
+
+    <!-- EXTRA: DICCIONARIO LINGÜÍSTICO -->
+    <div class="desplegable">
+        <button class="header-oro" onclick="toggleSec('sec-dicc')" style="color: #fff; text-shadow: none; background: #222;">
+            <span>DICCIONARIO LIRIÉ</span> <span>[A-Z]</span>
+        </button>
+        <div id="sec-dicc" class="contenido">
+            <div class="ficha-entry"><strong>Español:</strong> Mundo/Planeta / <strong>Lirié:</strong> Lirié</div>
+            <div class="ficha-entry"><strong>Español:</strong> Habitante / <strong>Lirié:</strong> Liriansh</div>
+        </div>
+    </div>
+
+</div>
+
 <script>
-    // Función para mostrar/ocultar secciones
     function toggleSec(id) {
-        document.getElementById(id).classList.toggle('show');
+        const el = document.getElementById(id);
+        el.classList.toggle('show');
     }
 
-    // Función para cambiar el modo
     function toggleTheme() {
         document.body.classList.toggle('light-mode');
+    }
+
+    function inyectarDato() {
+        const tipo = document.getElementById('tipo-data').value;
+        const titulo = document.getElementById('main-title').value;
+        const contenido = document.getElementById('main-content').value;
+        
+        let code = "";
+        if(tipo === 'dicc') {
+            code = `{es: "${titulo}", li: "${contenido}"},`;
+        } else {
+            code = `"${titulo.toLowerCase().replace(/\s+/g, '_')}": {\n  titulo: "${titulo}",\n  data: "${contenido}"\n},`;
+        }
+        
+        document.getElementById('result-code').value = code;
     }
 </script>
 
