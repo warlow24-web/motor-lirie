@@ -38,96 +38,6 @@
 
 <script>
     const diccionario = [
-        // --- SAGRADO Y ELEMENTOS ---
-        {es: "dios", li: "ELOH", mod: "Sagrado"},
-        {es: "palabra", li: "LOG", mod: "Sagrado"},
-        {es: "luz", li: "AUR", mod: "Sagrado"},
-        {es: "pacto", li: "BER", mod: "Sagrado"},
-        {es: "verdad", li: "EMET", mod: "Sagrado"},
-        {es: "fuego", li: "ESH", mod: "Elementos"},
-        {es: "agua", li: "MAY", mod: "Elementos"},
-        {es: "hielo", li: "KERET", mod: "Elementos"},
-        {es: "viento", li: "RUAH", mod: "Elementos"},
-        {es: "oscuridad", li: "NOX", mod: "Elementos"},
-        
-        // --- JERARQUÍA Y PERSONAJES ---
-        {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
-        {es: "maestro", li: "BVAR", mod: "Jerarquía"},
-        {es: "rey", li: "MALK", mod: "Civilización"},
-        {es: "espada", li: "JEREV", mod: "Civilización"},
-        {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
-        {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
-        
-        // --- LÓGICA MA-LUMIN ---
-        {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
-        {es: "sistema", li: "SEDER", mod: "Lógica"},
-        {es: "despertar", li: "KUM", mod: "Estados"},
-        {es: "luchar", li: "LAHAM", mod: "Acciones"},
-        {es: "crear", li: "BARA", mod: "Acciones"},
-        
-        // --- CONECTORES Y SENTIMIENTOS (PACK DE FLUIDEZ) ---
-        {es: "hola", li: "SHAL", mod: "Social"},
-        {es: "es", li: "VET", mod: "Gramática"},
-        {es: "un", li: "DA", mod: "Gramática"},
-        {es: "el", li: "HA", mod: "Gramática"},
-        {es: "la", li: "HA", mod: "Gramática"},
-        {es: "y", li: "VE", mod: "Gramática"},
-        {es: "mi", li: "ANI", mod: "Gramática"},
-        {es: "amor", li: "AHAV", mod: "Sentimientos"},
-        {es: "paz", li: "SHALOM", mod: "Sentimientos"},
-        {es: "gracias", li: "TODA", mod: "Social"},
-        {es: "yo", li: "ANOKI", mod: "Persona"},
-        {es: "soy", li: "VET-ANI", mod: "Persona"},
-                // --- EXPANSIÓN MASIVA: ACCIONES Y VERBOS ---
-        {es: "ir", li: "LEK", mod: "Acciones"},
-        {es: "venir", li: "BO", mod: "Acciones"},
-        {es: "ver", li: "RA", mod: "Acciones"},
-        {es: "hablar", li: "DAB", mod: "Acciones"},
-        {es: "escuchar", li: "SHA", mod: "Acciones"},
-        {es: "querer", li: "AVO", mod: "Acciones"},
-        {es: "saber", li: "YAD", mod: "Acciones"},
-        {es: "hacer", li: "ASA", mod: "Acciones"},
-
-        // --- EXPANSIÓN MASIVA: TIEMPO Y ESPACIO ---
-        {es: "ahora", li: "ATA", mod: "Tiempo"},
-        {es: "siempre", li: "OLAM", mod: "Tiempo"},
-        {es: "nunca", li: "LO-OD", mod: "Tiempo"},
-        {es: "hoy", li: "YOM", mod: "Tiempo"},
-        {es: "aqui", li: "PO", mod: "Espacio"},
-        {es: "alli", li: "SHAM", mod: "Espacio"},
-        {es: "dentro", li: "BET", mod: "Espacio"},
-
-        // --- EXPANSIÓN MASIVA: CUALIDADES (ADJETIVOS) ---
-        {es: "bueno", li: "TOV", mod: "Cualidades"},
-        {es: "malo", li: "RA", mod: "Cualidades"},
-        {es: "grande", li: "GAD", mod: "Cualidades"},
-        {es: "pequeño", li: "KAT", mod: "Cualidades"},
-        {es: "fuerte", li: "AZ", mod: "Cualidades"},
-        {es: "debil", li: "DAK", mod: "Cualidades"},
-        {es: "oscuro", li: "JOS", mod: "Cualidades"},
-        {es: "brillante", li: "ZAR", mod: "Cualidades"},
-
-        // --- EXPANSIÓN MASIVA: SERES Y NATURALEZA ---
-        {es: "hombre", li: "ISH", mod: "Seres"},
-        {es: "mujer", li: "ISHA", mod: "Seres"},
-        {es: "hijo", li: "BEN", mod: "Seres"},
-        {es: "hija", li: "BAT", mod: "Seres"},
-        {es: "tierra", li: "ERET", mod: "Mundo"},
-        {es: "cielo", li: "SAM", mod: "Mundo"},
-        {es: "estrella", li: "KOK", mod: "Mundo"},
-        {es: "vida", li: "JAY", mod: "Mundo"},
-        {es: "muerte", li: "MOT", mod: "Mundo"},
-
-        // --- EXPANSIÓN MASIVA: PREGUNTAS Y DUDAS ---
-        {es: "que", li: "MA", mod: "Dudas"},
-        {es: "quien", li: "MI", mod: "Dudas"},
-        {es: "como", li: "KE", mod: "Dudas"},
-        {es: "donde", li: "AYN", mod: "Dudas"},
-        {es: "porque", li: "MAD", mod: "Dudas"},
-        {es: "si", li: "KEN", mod: "Logica"},
-        {es: "no", li: "LO", mod: "Logica"},
-        
-    const diccionario = [
         // --- NÚCLEO SAGRADO Y ELEMENTOS ---
         {es: "dios", li: "ELOH", mod: "Sagrado"},
         {es: "palabra", li: "LOG", mod: "Sagrado"},
@@ -140,7 +50,7 @@
         {es: "viento", li: "RUAH", mod: "Elementos"},
         {es: "oscuridad", li: "NOX", mod: "Elementos"},
 
-        // --- JERARQUÍA AMSTARSH Y PERSONAJES ---
+        // --- JERARQUÍA Y PERSONAJES ---
         {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
         {es: "maestro", li: "BVAR", mod: "Jerarquía"},
         {es: "rey", li: "MALK", mod: "Civilización"},
@@ -148,7 +58,7 @@
         {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
         {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
 
-        // --- ESTADOS Y FLUIDEZ (Lo que faltaba) ---
+        // --- ESTADOS Y FLUIDEZ ---
         {es: "hola", li: "SHAL", mod: "Social"},
         {es: "como", li: "KE", mod: "Dudas"},
         {es: "estas", li: "AYEK", mod: "Estados"},
@@ -157,39 +67,78 @@
         {es: "bien", li: "TOV", mod: "Estados"},
         {es: "mal", li: "RA", mod: "Estados"},
         {es: "es", li: "VET", mod: "Gramática"},
-        {es: "soy", li: "VET-ANI", mod: "Persona"},
-        {es: "yo", li: "ANOKI", mod: "Persona"},
-        {es: "mi", li: "ANI", mod: "Gramática"},
-        {es: "tu", li: "ATA", mod: "Persona"},
+        {es: "un", li: "DA", mod: "Gramática"},
         {es: "el", li: "HA", mod: "Gramática"},
         {es: "la", li: "HA", mod: "Gramática"},
         {es: "y", li: "VE", mod: "Gramática"},
+        {es: "mi", li: "ANI", mod: "Gramática"},
+        {es: "tu", li: "ATA", mod: "Persona"},
+        {es: "yo", li: "ANOKI", mod: "Persona"},
+        {es: "soy", li: "VET-ANI", mod: "Persona"},
 
-        // --- EXPANSIÓN MASIVA: EMOCIONES Y COMBATE ---
+        // --- ACCIONES Y VERBOS ---
+        {es: "ir", li: "LEK", mod: "Acciones"},
+        {es: "venir", li: "BO", mod: "Acciones"},
+        {es: "ver", li: "RA", mod: "Acciones"},
+        {es: "hablar", li: "DAB", mod: "Acciones"},
+        {es: "escuchar", li: "SHA", mod: "Acciones"},
+        {es: "querer", li: "AVO", mod: "Acciones"},
+        {es: "saber", li: "YAD", mod: "Acciones"},
+        {es: "hacer", li: "ASA", mod: "Acciones"},
+        {es: "luchar", li: "LAHAM", mod: "Acciones"},
+        {es: "crear", li: "BARA", mod: "Acciones"},
+        {es: "despertar", li: "KUM", mod: "Estados"},
+
+        // --- TIEMPO Y ESPACIO ---
+        {es: "ahora", li: "ATA", mod: "Tiempo"},
+        {es: "siempre", li: "OLAM", mod: "Tiempo"},
+        {es: "nunca", li: "LO-OD", mod: "Tiempo"},
+        {es: "hoy", li: "YOM", mod: "Tiempo"},
+        {es: "aqui", li: "PO", mod: "Espacio"},
+        {es: "alli", li: "SHAM", mod: "Espacio"},
+        {es: "dentro", li: "BET", mod: "Espacio"},
+
+        // --- CUALIDADES Y EMOCIONES ---
+        {es: "bueno", li: "TOV", mod: "Cualidades"},
+        {es: "malo", li: "RA", mod: "Cualidades"},
+        {es: "grande", li: "GAD", mod: "Cualidades"},
+        {es: "pequeño", li: "KAT", mod: "Cualidades"},
+        {es: "fuerte", li: "AZ", mod: "Cualidades"},
+        {es: "debil", li: "DAK", mod: "Cualidades"},
+        {es: "oscuro", li: "JOS", mod: "Cualidades"},
+        {es: "brillante", li: "ZAR", mod: "Cualidades"},
         {es: "amor", li: "AHAV", mod: "Sentimientos"},
         {es: "paz", li: "SHALOM", mod: "Sentimientos"},
         {es: "odio", li: "SANA", mod: "Sentimientos"},
         {es: "miedo", li: "YARE", mod: "Sentimientos"},
-        {es: "fuerte", li: "AZ", mod: "Cualidades"},
-        {es: "debil", li: "DAK", mod: "Cualidades"},
-        {es: "luchar", li: "LAHAM", mod: "Acciones"},
-        {es: "morir", li: "MOT", mod: "Acciones"},
-        {es: "vivir", li: "JAY", mod: "Acciones"},
-        {es: "sangre", li: "DAM", mod: "Cuerpo"},
-        {es: "corazon", li: "LEV", mod: "Cuerpo"},
-        {es: "poder", li: "KOAH", mod: "Lógica"},
 
-        // --- EXPANSIÓN MASIVA: FAMILIA Y MUNDO ---
+        // --- SERES, FAMILIA Y MUNDO ---
+        {es: "hombre", li: "ISH", mod: "Seres"},
+        {es: "mujer", li: "ISHA", mod: "Seres"},
         {es: "hijo", li: "BEN", mod: "Familia"},
         {es: "hija", li: "BAT", mod: "Familia"},
         {es: "hermano", li: "AJ", mod: "Familia"},
         {es: "padre", li: "AV", mod: "Familia"},
         {es: "madre", li: "EM", mod: "Familia"},
+        {es: "tierra", li: "ADAM", mod: "Mundo"},
         {es: "mundo", li: "ERET", mod: "Mundo"},
         {es: "cielo", li: "SAM", mod: "Mundo"},
-        {es: "tierra", li: "ADAM", mod: "Mundo"},
-        {es: "ahora", li: "ATA", mod: "Tiempo"},
-        {es: "siempre", li: "OLAM", mod: "Tiempo"},
+        {es: "estrella", li: "KOK", mod: "Mundo"},
+        {es: "vida", li: "JAY", mod: "Mundo"},
+        {es: "muerte", li: "MOT", mod: "Mundo"},
+        {es: "sangre", li: "DAM", mod: "Cuerpo"},
+        {es: "corazon", li: "LEV", mod: "Cuerpo"},
+
+        // --- PREGUNTAS Y LÓGICA ---
+        {es: "que", li: "MA", mod: "Dudas"},
+        {es: "quien", li: "MI", mod: "Dudas"},
+        {es: "donde", li: "AYN", mod: "Dudas"},
+        {es: "porque", li: "MAD", mod: "Dudas"},
+        {es: "si", li: "KEN", mod: "Logica"},
+        {es: "no", li: "LO", mod: "Logica"},
+        {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
+        {es: "sistema", li: "SEDER", mod: "Lógica"},
+        {es: "poder", li: "KOAH", mod: "Lógica"},
         {es: "gracias", li: "TODA", mod: "Social"}
     ];
 
@@ -206,16 +155,13 @@
             return;
         }
 
-        // Función interna para limpiar tildes y mayúsculas
         const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-        // DIVIDIR LA FRASE EN PALABRAS
         const palabrasInput = query.split(/\s+/);
         let resultadoLirie = [];
         let modulosUsados = new Set();
 
         palabrasInput.forEach(palabra => {
-            // BUSCADOR INTELIGENTE: Compara la palabra limpia con el diccionario limpio
             const encontrado = diccionario.find(item => limpiar(item.es) === limpiar(palabra));
             
             if (encontrado) {
@@ -226,7 +172,6 @@
             }
         });
 
-        // ACTUALIZAR PANTALLA
         statusLabel.innerText = "Oración Lirié";
         displayLi.innerText = resultadoLirie.join(" ");
         
