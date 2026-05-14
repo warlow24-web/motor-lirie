@@ -3,127 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Lirié v1.4 - Fichas Amstarsh</title>
+    <title>SISTEMA MA-LUMIN v1.6</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; --ice: #00d4ff; --dark: #8000ff; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        :root { --gold: #d4af37; --bg: #0a0a0a; --card: #151515; --text: #e0e0e0; --accent: #222; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 500px; width: 100%; }
-        h1 { color: var(--gold); text-align: center; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
-        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
-        .search-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
         
-        /* TARJETA DE RESULTADO */
-        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 100px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        .word { font-size: 24px; font-weight: bold; color: var(--gold); margin: 0; }
-        
-        /* FICHA TÉCNICA ESPECIAL */
-        .ficha-tecnica { background: #222; border: 1px solid var(--gold); border-radius: 8px; padding: 15px; margin-top: 10px; display: none; animation: fadeIn 0.5s; }
-        .ficha-header { display: flex; justify-content: space-between; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
-        .stat { font-size: 13px; color: #aaa; margin: 3px 0; }
-        .stat b { color: var(--gold); }
-        .badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .ice-badge { background: var(--ice); color: black; }
-        .dark-badge { background: var(--dark); color: white; }
+        /* NAVEGACIÓN */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 12px; background: var(--card); border: 1px solid var(--accent); color: #666; cursor: pointer; border-radius: 8px; font-weight: bold; text-transform: uppercase; font-size: 11px; transition: 0.3s; }
+        .tab-btn.active { border-color: var(--gold); color: var(--gold); background: #1a160d; box-shadow: 0 0 10px rgba(212, 175, 55, 0.1); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid var(--accent); color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; }
+        .search-box:focus { border-color: var(--gold); }
+
+        /* PANELES */
+        .panel { display: none; animation: fadeIn 0.3s ease; }
+        .panel.active { display: block; }
+
+        /* DISEÑO CÓDICE (HISTORIA Y OBJETOS) */
+        .ficha-card { background: linear-gradient(145deg, #1a1a1a, #111); border: 1px solid #d4af3744; border-radius: 12px; padding: 20px; }
+        .f-type { font-size: 10px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 5px; opacity: 0.8; }
+        .f-title { font-size: 24px; color: white; margin: 0 0 15px 0; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .f-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .f-data { font-size: 12px; color: #aaa; }
+        .f-data b { color: var(--gold); font-size: 10px; display: block; text-transform: uppercase; }
+        .f-lore { font-size: 14px; line-height: 1.6; color: #ccc; border-top: 1px solid #333; padding-top: 15px; font-style: italic; }
+
+        /* DISEÑO TRADUCTOR */
+        .trans-card { background: var(--card); padding: 30px; border-radius: 12px; border-left: 4px solid var(--gold); text-align: center; }
+        .lirie-res { font-size: 32px; font-weight: bold; color: var(--gold); margin-bottom: 10px; letter-spacing: 1px; }
         
-        .copy-btn { margin-top: 15px; padding: 8px; background: transparent; border: 1px solid var(--gold); color: var(--gold); border-radius: 5px; cursor: pointer; font-size: 11px; text-transform: uppercase; width: fit-content; }
-        .footer { margin-top: 30px; font-size: 10px; color: #555; text-align: center; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .footer { margin-top: 40px; font-size: 10px; color: #444; text-align: center; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Lirié & Amstarsh DB</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="Busca un Amstarsh o traduce..." oninput="buscar()">
+    <h1 style="text-align:center; color:var(--gold); font-size: 18px; letter-spacing: 3px;">INTERFACE MA-LUMIN</h1>
     
-    <div id="result" class="result-card">
-        <p style="font-size: 11px; color: #888; margin: 0;">SISTEMA DE LEY</p>
-        <div id="lirieWord" class="word">---</div>
-        <div id="fichaContainer" class="ficha-tecnica">
-            <div class="ficha-header">
-                <span id="fNombre" style="font-weight: bold; color: white;"></span>
-                <span id="fRango" class="badge"></span>
-            </div>
-            <p class="stat"><b>Elemento:</b> <span id="fElemento"></span></p>
-            <p class="stat"><b>Habilidad:</b> <span id="fHabilidad"></span></p>
-            <p class="stat"><b>Origen:</b> <span id="fOrigen"></span></p>
-        </div>
-        <button class="copy-btn" id="copyBtn" onclick="copiarTraduccion()">Copiar</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('traductor')">Idioma</button>
+        <button class="tab-btn" onclick="switchTab('codice')">Códice</button>
     </div>
 
-    <div class="footer">SISTEMA MA-LUMIN v1.4 | PROTECTORES REGISTRADOS</div>
+    <input type="text" id="mainInput" class="search-box" placeholder="Traducir..." oninput="procesar()">
+
+    <!-- PANEL TRADUCTOR -->
+    <div id="panel-traductor" class="panel active">
+        <div class="trans-card">
+            <div id="outLirie" class="lirie-res">---</div>
+            <div style="font-size: 11px; color: #555; text-transform: uppercase;">Salida Gramatical</div>
+        </div>
+    </div>
+
+    <!-- PANEL CÓDICE -->
+    <div id="panel-codice" class="panel">
+        <div id="outCodice" class="ficha-card" style="display: none;">
+            <div id="f-tipo" class="f-type">REGISTRO</div>
+            <h2 id="f-titulo" class="f-title"></h2>
+            <div class="f-info-grid">
+                <div class="f-data"><b id="label-1">Dato A</b><span id="f-d1"></span></div>
+                <div class="f-data"><b id="label-2">Dato B</b><span id="f-d2"></span></div>
+            </div>
+            <div id="f-lore" class="f-lore"></div>
+        </div>
+        <div id="codice-msg" style="text-align: center; color: #444; padding: 40px; font-size: 14px;">Escribe el nombre de un Protector, Objeto o Lugar...</div>
+    </div>
+
+    <div class="footer">ARCHIVOS DE LOS 100 AMSTARSH | SEGURIDAD NIVEL 1</div>
 </div>
 
 <script>
-    // BASE DE DATOS DE FICHAS TÉCNICAS (Aquí irán tus 100 Amstarsh)
-    const fichasAmstarsh = {
-        "max maximilian": {
-            nombre: "Max Maximilian",
-            rango: "Protector 16",
-            elemento: "Oscuridad",
-            habilidad: "Vacío Eterno",
-            origen: "Nacimiento",
-            estilo: "dark-badge"
+    let currentTab = 'traductor';
+
+    // --- BASE DE DATOS DEL CÓDICE (Personas, Lugares, Objetos, Historia) ---
+    const CODICE = {
+        "max maximilian": { 
+            tipo: "PERSONA", titulo: "Max Maximilian", 
+            d1: "Oscuridad", d2: "Protector 16", label1: "Elemento", label2: "Rango",
+            lore: "Maestro de la oscuridad. Su poder permite manipular el vacío absoluto."
         },
-        "alistar": {
-            nombre: "Alistar",
-            rango: "Amstarsh",
-            elemento: "Hielo",
-            habilidad: "Cero Absoluto",
-            origen: "Tierras del Norte",
-            estilo: "ice-badge"
+        "alistar": { 
+            tipo: "PERSONA", titulo: "Alistar", 
+            d1: "Hielo", d2: "Protector", label1: "Elemento", label2: "Rango",
+            lore: "Guerrero de las tierras gélidas. Su fuerte es el control de temperaturas bajo cero."
+        },
+        "babby gold el dorado": { 
+            tipo: "CIENTÍFICO", titulo: "Babby Gold", 
+            d1: "Nacimiento", d2: "Investigación", label1: "Elemento", label2: "Especialidad",
+            lore: "Encargado de la creación y estudio de nuevas formas de vida Amstarsh."
+        },
+        "nacimiento": {
+            tipo: "LUGAR / HISTORIA", titulo: "Nacimiento",
+            d1: "Origen", d2: "Sagrado", label1: "Categoría", label2: "Estado",
+            lore: "El punto de origen de los 16 Protectores. Es un nexo de energía pura donde la vida se manifiesta por primera vez."
         }
     };
 
-    const diccionario = [
-        {es: "hola", li: "SHAL"},
-        {es: "protector", li: "AMSTARSH"},
-        {es: "hielo", li: "KERET"},
-        {es: "oscuridad", li: "NOX"},
-        {es: "maestro", li: "BVAR"},
-        {es: "soy", li: "VET-ANI"}
-        // ... (puedes seguir pegando tu diccionario masivo aquí)
+    // --- DICCIONARIO DE IDIOMA ---
+    const LIRIE = [
+        {es: "hola", li: "SHAL"}, {es: "como", li: "KE"}, {es: "estas", li: "AYEK"},
+        {es: "protector", li: "AMSTARSH"}, {es: "fuerte", li: "AZ"}, {es: "es", li: "VET"},
+        {es: "mi", li: "ANI"}, {es: "hermano", li: "AJ"}, {es: "paz", li: "SHALOM"}
     ];
 
-    function buscar() {
-        const query = document.getElementById('searchInput').value.trim().toLowerCase();
-        const displayLi = document.getElementById('lirieWord');
-        const ficha = document.getElementById('fichaContainer');
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         
-        if (query === "") {
-            displayLi.innerText = "---";
-            ficha.style.display = "none";
-            return;
-        }
-
-        // 1. BUSCAR EN FICHAS TÉCNICAS
-        if (fichasAmstarsh[query]) {
-            const f = fichasAmstarsh[query];
-            displayLi.innerText = "FICHA DETECTADA";
-            ficha.style.display = "block";
-            document.getElementById('fNombre').innerText = f.nombre;
-            document.getElementById('fRango').innerText = f.rango;
-            document.getElementById('fRango').className = "badge " + f.estilo;
-            document.getElementById('fElemento').innerText = f.elemento;
-            document.getElementById('fHabilidad').innerText = f.habilidad;
-            document.getElementById('fOrigen').innerText = f.origen;
-        } else {
-            // 2. SI NO ES FICHA, BUSCAR TRADUCCIÓN
-            ficha.style.display = "none";
-            const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const palabras = query.split(/\s+/);
-            let res = palabras.map(p => {
-                const e = diccionario.find(item => limpiar(item.es) === limpiar(p));
-                return e ? e.li : `(${p})`;
-            });
-            displayLi.innerText = res.join(" ");
-        }
+        event.target.classList.add('active');
+        document.getElementById(`panel-${tab}`).classList.add('active');
+        document.getElementById('mainInput').placeholder = tab === 'traductor' ? "Traducir al Lirié..." : "Buscar en el Códice...";
+        procesar();
     }
 
-    function copiarTraduccion() {
-        const texto = document.getElementById('lirieWord').innerText;
-        navigator.clipboard.writeText(texto);
+    function procesar() {
+        const val = document.getElementById('mainInput').value.trim().toLowerCase();
+        const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+        if (currentTab === 'traductor') {
+            if (val === "") { document.getElementById('outLirie').innerText = "---"; return; }
+            const palabras = val.split(/\s+/);
+            const res = palabras.map(p => {
+                const e = LIRIE.find(item => limpiar(item.es) === limpiar(p));
+                return e ? e.li : `(${p})`;
+            });
+            document.getElementById('outLirie').innerText = res.join(" ");
+        } else {
+            const card = document.getElementById('outCodice');
+            const msg = document.getElementById('codice-msg');
+            
+            // Buscar ficha (limpia tildes para la búsqueda)
+            const fichaEntry = Object.keys(CODICE).find(key => limpiar(key) === limpiar(val));
+            
+            if (fichaEntry) {
+                const f = CODICE[fichaEntry];
+                card.style.display = "block";
+                msg.style.display = "none";
+                document.getElementById('f-tipo').innerText = f.tipo;
+                document.getElementById('f-titulo').innerText = f.titulo;
+                document.getElementById('f-d1').innerText = f.d1;
+                document.getElementById('f-d2').innerText = f.d2;
+                document.getElementById('label-1').innerText = f.label1;
+                document.getElementById('label-2').innerText = f.label2;
+                document.getElementById('f-lore').innerText = f.lore;
+            } else {
+                card.style.display = "none";
+                msg.style.display = "block";
+            }
+        }
     }
 </script>
 </body>
