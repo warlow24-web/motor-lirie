@@ -57,12 +57,7 @@
             padding: 25px; border-top: 5px solid var(--gold); box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
         .f-type { font-size: 11px; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; font-weight: bold; }
-        .f-title { font-size: 26px; margin: 8px 0 15px 0; }
-        .f-data { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .data-tag {
-            background: rgba(212, 175, 55, 0.1); padding: 6px 12px; border-radius: 5px;
-            font-size: 11px; border: 1px solid rgba(212, 175, 55, 0.2); color: var(--gold);
-        }
+        .f-title { font-size: 22px; margin: 8px 0 15px 0; line-height: 1.2; }
         
         .trans-card { 
             background: var(--card); padding: 50px 20px; border-radius: 15px; 
@@ -92,7 +87,10 @@
         <button id="btn-codice" class="tab-btn" onclick="switchTab('codice')">Códice</button>
     </div>
 
-    <input type="text" id="mainInput" class="search-box" placeholder="Escribe para buscar..." oninput="procesar()">
+    <!-- Buscador (Solo visible en traductor) -->
+    <div id="search-container">
+        <input type="text" id="mainInput" class="search-box" placeholder="Escribe oraciones..." oninput="procesar()">
+    </div>
 
     <div id="panel-traductor" class="panel active">
         <div class="trans-card">
@@ -102,17 +100,18 @@
     </div>
 
     <div id="panel-codice" class="panel">
+        <select id="codiceMenu" class="search-box" onchange="abrirArchivo(this.value)">
+            <option value="">-- SELECCIONE FICHA TÉCNICA --</option>
+            <option value="alistar_maestro">Alistar del Hielo: El Amstarsh Maestro</option>
+        </select>
+
         <div id="outCodice" class="ficha-card" style="display: none;">
             <div id="f-tipo" class="f-type"></div>
             <h2 id="f-title" class="f-title"></h2>
-            <div class="f-data">
-                <div class="data-tag">ELEMENTO: <span id="f-d1"></span></div>
-                <div class="data-tag">RANGO: <span id="f-d2"></span></div>
-            </div>
-            <div id="f-lore" style="line-height: 1.7; font-size: 15px; font-style: italic;"></div>
+            <div id="f-content" style="line-height: 1.7; font-size: 14px;"></div>
         </div>
-        <div id="codice-msg" style="text-align: center; opacity: 0.4; padding: 40px; font-size: 14px;">
-            Sincronizando con la base de datos de los 100 Amstarsh...
+        <div id="codice-placeholder" style="text-align: center; opacity: 0.4; padding: 40px; font-size: 13px;">
+            Sincronizando con los archivos de los 100 Amstarsh...
         </div>
     </div>
 
@@ -126,7 +125,7 @@
     }
     if (localStorage.getItem('theme') === 'light') document.body.classList.add('light-mode');
 
-    // BASE DE DATOS LIRIÉ (NUTRIDA CON CONECTORES)
+    // DICCIONARIO LIRIÉ EXPANDIDO
     const LIRIE = [
         {es: "protector", li: "AMSTARSH"},
         {es: "guerrero", li: "AMSTARSH"},
@@ -136,32 +135,45 @@
         {es: "oscuridad", li: "MAX-LUM"},
         {es: "luz", li: "LUMIN"},
         {es: "maestro", li: "BVORIAM"},
-        // Conectores y artículos añadidos para fluidez
         {es: "el", li: "an"},
         {es: "la", li: "al"},
+        {es: "los", li: "ans"},
+        {es: "las", li: "als"},
         {es: "y", li: "ka"},
         {es: "de", li: "se"},
-        {es: "es", li: "va"},
         {es: "mi", li: "mi"},
-        {es: "en", li: "en"}
+        {es: "tu", li: "tu"},
+        {es: "es", li: "va"},
+        {es: "son", li: "vas"},
+        {es: "en", li: "en"},
+        {es: "con", li: "con"},
+        {es: "para", li: "par"},
+        {es: "poder", li: "kren"},
+        {es: "todo", li: "omni"},
+        {es: "arma", li: "kyo"},
+        {es: "siempre", li: "aevum"},
+        {es: "muerte", li: "mors"},
+        {es: "vida", li: "viv"}
     ];
 
-    // CÓDICE AMSTARSH (CORREGIDO)
-    const CODICE = {
-        "max maximilian": { 
-            tipo: "AMSTARSH", titulo: "Max Maximilian", 
-            d1: "Oscuridad", d2: "Protector 16", 
-            lore: "Maestro supremo de las sombras. Corregido: su atributo es Oscuridad, no Hielo." 
-        },
-        "alistar": { 
-            tipo: "AMSTARSH", titulo: "Alistar", 
-            d1: "Hielo", d2: "Protector de Élite", 
-            lore: "Especialista en combate gélido. Todo su poder se basa en el fuerte del hielo." 
-        },
-        "babby gold": { 
-            tipo: "AMSTARSH", titulo: "Babby Gold El Dorado", 
-            d1: "Nacimiento", d2: "Científico", 
-            lore: "Anteriormente referenciado como Baby Gold Zeluan. Su enfoque es la creación." 
+    // ARCHIVOS TÉCNICOS
+    const FICHAS = {
+        "alistar_maestro": {
+            titulo: "Alistar del Hielo: El Amstarsh Maestro",
+            tipo: "AMSTARSH CLASE MAESTRO",
+            cuerpo: `
+                <p>Alistar es un Amstarsh cuyo dominio absoluto es el hielo. Su entrenamiento se basa en potenciar su elemento principal a través de tres grandes figuras:</p>
+                <p><strong>1. Frost Thule (Amstarsh del Frío):</strong> Mentor elemental. Le enseñó la manipulación del frío puro y la base del poder.</p>
+                <p><strong>2. Max Maximilian:</strong> Maestro de la Oscuridad. Aportó el conocimiento del vacío absoluto; gracias a él, el hielo de Alistar es de tonalidad negra y devora energía.</p>
+                <p><strong>3. Babby Gold El Dorado:</strong> Maestro del Nacimiento. Le otorgó la capacidad de que su hielo se comporte como un organismo vivo que se replica autónomamente.</p>
+                <p style="color: var(--gold); border-top: 1px solid var(--accent); padding-top: 10px;"><strong>ARMA: FILO DEL OLVIDO GLACIAL</strong></p>
+                <ul>
+                    <li><em>Hielo:</em> Congela al contacto.</li>
+                    <li><em>Oscuridad:</em> Hoja de cristal negro que borra recuerdos recientes.</li>
+                    <li><em>Nacimiento:</em> El cristal crece y se expande por el cuerpo del rival.</li>
+                </ul>
+                <p style="font-size: 12px; font-style: italic; opacity: 0.7;">Nota: La Oscuridad y el Nacimiento solo sirven para fortalecer su elemento base: el Hielo.</p>
+            `
         }
     };
 
@@ -170,49 +182,47 @@
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.getElementById(`btn-${tab}`).classList.add('active');
         document.getElementById(`panel-${tab}`).classList.add('active');
+        
+        // Ocultar buscador si estamos en códice
+        document.getElementById('search-container').style.display = (tab === 'traductor') ? 'block' : 'none';
         document.getElementById('mainInput').value = ""; 
         procesar();
     }
 
-    // PROCESAMIENTO FLUIDO (ORACIONES + CÓDICE)
+    function abrirArchivo(id) {
+        const card = document.getElementById('outCodice');
+        const placeholder = document.getElementById('codice-placeholder');
+        const content = document.getElementById('f-content');
+        const ficha = FICHAS[id];
+
+        if (ficha) {
+            document.getElementById('f-tipo').innerText = ficha.tipo;
+            document.getElementById('f-title').innerText = ficha.titulo;
+            content.innerHTML = ficha.cuerpo;
+            card.style.display = "block";
+            placeholder.style.display = "none";
+        } else {
+            card.style.display = "none";
+            placeholder.style.display = "block";
+        }
+    }
+
     function procesar() {
         const val = document.getElementById('mainInput').value.trim().toLowerCase();
-        
-        if (document.getElementById('panel-traductor').classList.contains('active')) {
-            if (!val) {
-                document.getElementById('outLirie').innerText = "---";
-                document.getElementById('es-ref').innerText = "SISTEMA DE TRADUCCIÓN LIRIÉ";
-                return;
-            }
-
-            // Lógica de traducción de oraciones (Tokenización)
-            const palabras = val.split(/\s+/);
-            const traduccion = palabras.map(p => {
-                const entry = LIRIE.find(i => i.es === p);
-                return entry ? entry.li : `[${p}]`;
-            });
-
-            document.getElementById('outLirie').innerText = traduccion.join(" ");
-            document.getElementById('es-ref').innerText = "Traduciendo oración...";
-
-        } else {
-            const f = CODICE[val];
-            const card = document.getElementById('outCodice');
-            const msg = document.getElementById('codice-msg');
-            
-            if (f) {
-                card.style.display = "block";
-                msg.style.display = "none";
-                document.getElementById('f-tipo').innerText = f.tipo;
-                document.getElementById('f-title').innerText = f.titulo;
-                document.getElementById('f-d1').innerText = f.d1;
-                document.getElementById('f-d2').innerText = f.d2;
-                document.getElementById('f-lore').innerText = f.lore;
-            } else {
-                card.style.display = "none";
-                msg.style.display = "block";
-            }
+        if (!val) {
+            document.getElementById('outLirie').innerText = "---";
+            document.getElementById('es-ref').innerText = "SISTEMA DE TRADUCCIÓN LIRIÉ";
+            return;
         }
+
+        const palabras = val.split(/\s+/);
+        const traduccion = palabras.map(p => {
+            const entry = LIRIE.find(i => i.es === p);
+            return entry ? entry.li : `[${p}]`;
+        });
+
+        document.getElementById('outLirie').innerText = traduccion.join(" ");
+        document.getElementById('es-ref').innerText = "TRADUCIENDO ORACIÓN...";
     }
 </script>
 </body>
