@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inyector Ma-lumin v1.0</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 600px; width: 100%; }
+        .admin-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid var(--gold); margin-bottom: 20px; }
+        h1 { color: var(--gold); font-size: 18px; text-transform: uppercase; text-align: center; }
+        label { display: block; font-size: 12px; color: var(--gold); margin-top: 10px; text-transform: uppercase; }
+        input, textarea, select { width: 100%; padding: 10px; background: #111; border: 1px solid #444; color: white; border-radius: 5px; margin-top: 5px; box-sizing: border-box; }
+        .btn { background: var(--gold); color: black; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .output-area { background: #000; color: #0f0; font-family: monospace; padding: 15px; border-radius: 8px; font-size: 12px; white-space: pre-wrap; word-break: break-all; margin-top: 20px; border: 1px solid #0f0; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab { flex: 1; text-align: center; padding: 10px; background: #222; cursor: pointer; border-radius: 5px; font-size: 12px; }
+        .tab.active { background: var(--gold); color: black; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Inyector de Datos Amstarsh</h1>
+    
+    <div class="tabs">
+        <div id="tab1" class="tab active" onclick="switchMode('idioma')">Nuevo Idioma</div>
+        <div id="tab2" class="tab" onclick="switchMode('codice')">Nueva Ficha Códice</div>
+    </div>
+
+    <!-- MODO IDIOMA -->
+    <div id="form-idioma" class="admin-card">
+        <label>Palabra en Español</label>
+        <input type="text" id="es" placeholder="ej: guerrero">
+        <label>Traducción Lirié</label>
+        <input type="text" id="li" placeholder="ej: AMSTARSH">
+        <label>Módulo / Categoría</label>
+        <input type="text" id="mod" placeholder="ej: Jerarquía">
+        <button class="btn" onclick="generarIdioma()">Generar Código</button>
+    </div>
+
+    <!-- MODO CÓDICE -->
+    <div id="form-codice" class="admin-card" style="display:none;">
+        <label>Nombre Identificador (ID)</label>
+        <input type="text" id="c-id" placeholder="ej: alistar">
+        <label>Título Real</label>
+        <input type="text" id="c-titulo" placeholder="ej: Alistar el Grande">
+        <label>Tipo de Registro</label>
+        <select id="c-tipo">
+            <option value="PERSONA">PERSONA</option>
+            <option value="LUGAR">LUGAR</option>
+            <option value="OBJETO">OBJETO</option>
+            <option value="HISTORIA">HISTORIA</option>
+        </select>
+        <label>Dato 1 (Elemento / Categoría)</label>
+        <input type="text" id="c-d1" placeholder="ej: Hielo">
+        <label>Dato 2 (Rango / Ubicación)</label>
+        <input type="text" id="c-d2" placeholder="ej: Protector 05">
+        <label>Historia / Lore</label>
+        <textarea id="c-lore" rows="4" placeholder="Escribe aquí la historia..."></textarea>
+        <button class="btn" onclick="generarCodice()">Generar Código</button>
+    </div>
+
+    <div id="output" class="output-area">El código generado aparecerá aquí...</div>
+    <p style="font-size: 10px; color: #666; text-align: center; margin-top: 10px;">Copia el código y pégalo dentro de la lista correspondiente en tu App principal.</p>
+</div>
+
+<script>
+    let modo = 'idioma';
+
+    function switchMode(m) {
+        modo = m;
+        document.getElementById('form-idioma').style.display = m === 'idioma' ? 'block' : 'none';
+        document.getElementById('form-codice').style.display = m === 'codice' ? 'block' : 'none';
+        document.getElementById('tab1').className = m === 'idioma' ? 'tab active' : 'tab';
+        document.getElementById('tab2').className = m === 'codice' ? 'tab active' : 'tab';
+    }
+
+    function generarIdioma() {
+        const es = document.getElementById('es').value;
+        const li = document.getElementById('li').value;
+        const mod = document.getElementById('mod').value;
+        const codigo = `{es: "${es}", li: "${li}", mod: "${mod}"},`;
+        document.getElementById('output').innerText = codigo;
+    }
+
+    function generarCodice() {
+        const id = document.getElementById('c-id').value.toLowerCase();
+        const titulo = document.getElementById('c-titulo').value;
+        const tipo = document.getElementById('c-tipo').value;
+        const d1 = document.getElementById('c-d1').value;
+        const d2 = document.getElementById('c-d2').value;
+        const lore = document.getElementById('c-lore').value;
+
+        const codigo = `"${id}": { \n  tipo: "${tipo}", titulo: "${titulo}", \n  d1: "${d1}", d2: "${d2}", label1: "Dato A", label2: "Dato B", \n  lore: "${lore}" \n},`;
+        document.getElementById('output').innerText = codigo;
+    }
+</script>
+
+</body>
+</html>
