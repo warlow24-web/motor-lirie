@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Lirié v1.2</title>
+    <title>Motor Lirié v1.3</title>
     <style>
         :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
@@ -11,10 +11,12 @@
         h1 { color: var(--gold); text-align: center; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
         .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
         .search-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: relative; }
         .label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .word { font-size: 28px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; line-height: 1.2; }
+        .word { font-size: 28px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; line-height: 1.2; padding-right: 40px; }
         .meaning { font-style: italic; color: #aaa; margin-top: 10px; font-size: 14px; }
+        .copy-btn { margin-top: 15px; padding: 10px; background: transparent; border: 1px solid var(--gold); color: var(--gold); border-radius: 5px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.3s; width: fit-content; }
+        .copy-btn:hover { background: var(--gold); color: black; }
         .footer { margin-top: 40px; font-size: 10px; color: #555; text-align: center; line-height: 1.5; }
     </style>
 </head>
@@ -22,12 +24,13 @@
 
 <div class="container">
     <h1>Lirié App</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="Escribe una oración (ej: Dios luz fuego)..." oninput="buscar()">
+    <input type="text" id="searchInput" class="search-box" placeholder="Escribe una oración..." oninput="buscar()">
     
     <div id="result" class="result-card">
         <p class="label" id="statusLabel">Traducción de Ley</p>
         <div id="lirieWord" class="word">---</div>
         <p id="spanishMeaning" class="meaning">Escribe para empezar</p>
+        <button class="copy-btn" id="copyBtn" onclick="copiarTraduccion()">Copiar Lirié</button>
     </div>
 
     <div class="footer">
@@ -38,7 +41,6 @@
 
 <script>
     const diccionario = [
-        // --- NÚCLEO SAGRADO Y ELEMENTOS ---
         {es: "dios", li: "ELOH", mod: "Sagrado"},
         {es: "palabra", li: "LOG", mod: "Sagrado"},
         {es: "luz", li: "AUR", mod: "Sagrado"},
@@ -49,16 +51,12 @@
         {es: "hielo", li: "KERET", mod: "Elementos"},
         {es: "viento", li: "RUAH", mod: "Elementos"},
         {es: "oscuridad", li: "NOX", mod: "Elementos"},
-
-        // --- JERARQUÍA Y PERSONAJES ---
         {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
         {es: "maestro", li: "BVAR", mod: "Jerarquía"},
         {es: "rey", li: "MALK", mod: "Civilización"},
         {es: "espada", li: "JEREV", mod: "Civilización"},
         {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
         {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
-
-        // --- ESTADOS Y FLUIDEZ ---
         {es: "hola", li: "SHAL", mod: "Social"},
         {es: "como", li: "KE", mod: "Dudas"},
         {es: "estas", li: "AYEK", mod: "Estados"},
@@ -75,70 +73,14 @@
         {es: "tu", li: "ATA", mod: "Persona"},
         {es: "yo", li: "ANOKI", mod: "Persona"},
         {es: "soy", li: "VET-ANI", mod: "Persona"},
-
-        // --- ACCIONES Y VERBOS ---
         {es: "ir", li: "LEK", mod: "Acciones"},
         {es: "venir", li: "BO", mod: "Acciones"},
         {es: "ver", li: "RA", mod: "Acciones"},
-        {es: "hablar", li: "DAB", mod: "Acciones"},
-        {es: "escuchar", li: "SHA", mod: "Acciones"},
-        {es: "querer", li: "AVO", mod: "Acciones"},
-        {es: "saber", li: "YAD", mod: "Acciones"},
-        {es: "hacer", li: "ASA", mod: "Acciones"},
-        {es: "luchar", li: "LAHAM", mod: "Acciones"},
-        {es: "crear", li: "BARA", mod: "Acciones"},
-        {es: "despertar", li: "KUM", mod: "Estados"},
-
-        // --- TIEMPO Y ESPACIO ---
-        {es: "ahora", li: "ATA", mod: "Tiempo"},
-        {es: "siempre", li: "OLAM", mod: "Tiempo"},
-        {es: "nunca", li: "LO-OD", mod: "Tiempo"},
-        {es: "hoy", li: "YOM", mod: "Tiempo"},
-        {es: "aqui", li: "PO", mod: "Espacio"},
-        {es: "alli", li: "SHAM", mod: "Espacio"},
-        {es: "dentro", li: "BET", mod: "Espacio"},
-
-        // --- CUALIDADES Y EMOCIONES ---
-        {es: "bueno", li: "TOV", mod: "Cualidades"},
-        {es: "malo", li: "RA", mod: "Cualidades"},
-        {es: "grande", li: "GAD", mod: "Cualidades"},
-        {es: "pequeño", li: "KAT", mod: "Cualidades"},
-        {es: "fuerte", li: "AZ", mod: "Cualidades"},
-        {es: "debil", li: "DAK", mod: "Cualidades"},
-        {es: "oscuro", li: "JOS", mod: "Cualidades"},
-        {es: "brillante", li: "ZAR", mod: "Cualidades"},
         {es: "amor", li: "AHAV", mod: "Sentimientos"},
         {es: "paz", li: "SHALOM", mod: "Sentimientos"},
-        {es: "odio", li: "SANA", mod: "Sentimientos"},
-        {es: "miedo", li: "YARE", mod: "Sentimientos"},
-
-        // --- SERES, FAMILIA Y MUNDO ---
-        {es: "hombre", li: "ISH", mod: "Seres"},
-        {es: "mujer", li: "ISHA", mod: "Seres"},
+        {es: "fuerte", li: "AZ", mod: "Cualidades"},
         {es: "hijo", li: "BEN", mod: "Familia"},
-        {es: "hija", li: "BAT", mod: "Familia"},
-        {es: "hermano", li: "AJ", mod: "Familia"},
-        {es: "padre", li: "AV", mod: "Familia"},
-        {es: "madre", li: "EM", mod: "Familia"},
-        {es: "tierra", li: "ADAM", mod: "Mundo"},
-        {es: "mundo", li: "ERET", mod: "Mundo"},
-        {es: "cielo", li: "SAM", mod: "Mundo"},
-        {es: "estrella", li: "KOK", mod: "Mundo"},
-        {es: "vida", li: "JAY", mod: "Mundo"},
-        {es: "muerte", li: "MOT", mod: "Mundo"},
-        {es: "sangre", li: "DAM", mod: "Cuerpo"},
-        {es: "corazon", li: "LEV", mod: "Cuerpo"},
-
-        // --- PREGUNTAS Y LÓGICA ---
-        {es: "que", li: "MA", mod: "Dudas"},
-        {es: "quien", li: "MI", mod: "Dudas"},
-        {es: "donde", li: "AYN", mod: "Dudas"},
-        {es: "porque", li: "MAD", mod: "Dudas"},
-        {es: "si", li: "KEN", mod: "Logica"},
-        {es: "no", li: "LO", mod: "Logica"},
-        {es: "interfaz", li: "MA-LUMIN", mod: "Lógica"},
-        {es: "sistema", li: "SEDER", mod: "Lógica"},
-        {es: "poder", li: "KOAH", mod: "Lógica"},
+        {es: "siempre", li: "OLAM", mod: "Tiempo"},
         {es: "gracias", li: "TODA", mod: "Social"}
     ];
 
@@ -156,14 +98,12 @@
         }
 
         const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
         const palabrasInput = query.split(/\s+/);
         let resultadoLirie = [];
         let modulosUsados = new Set();
 
         palabrasInput.forEach(palabra => {
             const encontrado = diccionario.find(item => limpiar(item.es) === limpiar(palabra));
-            
             if (encontrado) {
                 resultadoLirie.push(encontrado.li);
                 modulosUsados.add(encontrado.mod);
@@ -174,11 +114,27 @@
 
         statusLabel.innerText = "Oración Lirié";
         displayLi.innerText = resultadoLirie.join(" ");
-        
         const mods = Array.from(modulosUsados);
-        displayEs.innerText = mods.length > 0 
-            ? "Módulos activos: " + mods.join(", ") 
-            : "Palabra no encontrada en los módulos";
+        displayEs.innerText = mods.length > 0 ? "Módulos: " + mods.join(", ") : "Sin módulos";
+    }
+
+    function copiarTraduccion() {
+        const texto = document.getElementById('lirieWord').innerText;
+        if (texto === "---") return;
+        
+        navigator.clipboard.writeText(texto).then(() => {
+            const btn = document.getElementById('copyBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "¡Copiado!";
+            btn.style.background = "var(--gold)";
+            btn.style.color = "black";
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.background = "transparent";
+                btn.style.color = "var(--gold)";
+            }, 1000);
+        });
     }
 </script>
 
