@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Motor Lirié v1.0</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { max-width: 500px; width: 100%; }
+        h1 { color: var(--gold); text-align: center; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
+        .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; }
+        .search-box:focus { border-color: var(--gold); }
+        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 100px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
+        .word { font-size: 32px; font-weight: bold; color: var(--gold); margin: 0; }
+        .meaning { font-style: italic; color: #aaa; margin-top: 5px; }
+        .footer { margin-top: 40px; font-size: 10px; color: #555; text-align: center; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Lirié App</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Busca en español (ej: Dios, Fuego)..." oninput="buscar()">
+    
+    <div id="result" class="result-card">
+        <p class="label">Traducción de Ley</p>
+        <p id="lirieWord" class="word">---</p>
+        <p id="spanishMeaning" class="meaning">Escribe para empezar</p>
+    </div>
+
+    <div class="footer">
+        DICCIONARIO DE 12 MÓDULOS<br>
+        SISTEMA AMSTARSH | SIN PUBLICIDAD
+    </div>
+</div>
+
+<script>
+    // Tu base de datos interna (Módulos 4-12)
+    const diccionario = [
+        {es: "dios", li: "ELOH", mod: "Sagrado"},
+        {es: "palabra", li: "LOG", mod: "Sagrado"},
+        {es: "luz", li: "AUR", mod: "Sagrado"},
+        {es: "pacto", li: "BER", mod: "Sagrado"},
+        {es: "fuego", li: "ESH", mod: "Elementos"},
+        {es: "agua", li: "MAY", mod: "Elementos"},
+        {es: "sangre", li: "DAM", mod: "Anatomía"},
+        {es: "corazón", li: "LEV", mod: "Anatomía"},
+        {es: "ojo", li: "AIN", mod: "Anatomía"},
+        {es: "mano", li: "YAD", mod: "Anatomía"},
+        {es: "alma", li: "NEF", mod: "Anatomía"},
+        {es: "rayo", li: "BARK", mod: "Mitos"},
+        {es: "estrella", li: "KOK", mod: "Mitos"},
+        {es: "ciudad", li: "IR", mod: "Civilización"},
+        {es: "rey", li: "MALK", mod: "Civilización"}
+    ];
+
+    function buscar() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const displayLi = document.getElementById('lirieWord');
+        const displayEs = document.getElementById('spanishMeaning');
+        
+        const resultado = diccionario.find(item => item.es === query);
+
+        if (resultado) {
+            displayLi.innerText = resultado.li;
+            displayEs.innerText = `${resultado.es.toUpperCase()} (${resultado.mod})`;
+        } else if (query === "") {
+            displayLi.innerText = "---";
+            displayEs.innerText = "Escribe para empezar";
+        } else {
+            displayLi.innerText = "???";
+            displayEs.innerText = "No encontrado en los módulos";
+        }
+    }
+</script>
+
+</body>
+</html>
