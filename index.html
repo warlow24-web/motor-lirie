@@ -3,140 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Motor Lirié v1.3</title>
+    <title>Motor Lirié v1.4 - Fichas Amstarsh</title>
     <style>
-        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; }
+        :root { --gold: #d4af37; --bg: #0f0f0f; --card: #1a1a1a; --text: #e0e0e0; --ice: #00d4ff; --dark: #8000ff; }
         body { background: var(--bg); color: var(--text); font-family: sans-serif; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
         .container { max-width: 500px; width: 100%; }
         h1 { color: var(--gold); text-align: center; letter-spacing: 2px; text-transform: uppercase; border-bottom: 1px solid var(--gold); padding-bottom: 10px; }
         .search-box { width: 100%; padding: 15px; background: var(--card); border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
         .search-box:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
-        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 120px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: relative; }
-        .label { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 5px; }
-        .word { font-size: 28px; font-weight: bold; color: var(--gold); margin: 0; letter-spacing: 1px; line-height: 1.2; padding-right: 40px; }
-        .meaning { font-style: italic; color: #aaa; margin-top: 10px; font-size: 14px; }
-        .copy-btn { margin-top: 15px; padding: 10px; background: transparent; border: 1px solid var(--gold); color: var(--gold); border-radius: 5px; cursor: pointer; font-size: 12px; text-transform: uppercase; transition: 0.3s; width: fit-content; }
-        .copy-btn:hover { background: var(--gold); color: black; }
-        .footer { margin-top: 40px; font-size: 10px; color: #555; text-align: center; line-height: 1.5; }
+        
+        /* TARJETA DE RESULTADO */
+        .result-card { background: var(--card); padding: 20px; border-radius: 8px; border-left: 4px solid var(--gold); min-height: 100px; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .word { font-size: 24px; font-weight: bold; color: var(--gold); margin: 0; }
+        
+        /* FICHA TÉCNICA ESPECIAL */
+        .ficha-tecnica { background: #222; border: 1px solid var(--gold); border-radius: 8px; padding: 15px; margin-top: 10px; display: none; animation: fadeIn 0.5s; }
+        .ficha-header { display: flex; justify-content: space-between; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px; }
+        .stat { font-size: 13px; color: #aaa; margin: 3px 0; }
+        .stat b { color: var(--gold); }
+        .badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .ice-badge { background: var(--ice); color: black; }
+        .dark-badge { background: var(--dark); color: white; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .copy-btn { margin-top: 15px; padding: 8px; background: transparent; border: 1px solid var(--gold); color: var(--gold); border-radius: 5px; cursor: pointer; font-size: 11px; text-transform: uppercase; width: fit-content; }
+        .footer { margin-top: 30px; font-size: 10px; color: #555; text-align: center; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Lirié App</h1>
-    <input type="text" id="searchInput" class="search-box" placeholder="Escribe una oración..." oninput="buscar()">
+    <h1>Lirié & Amstarsh DB</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Busca un Amstarsh o traduce..." oninput="buscar()">
     
     <div id="result" class="result-card">
-        <p class="label" id="statusLabel">Traducción de Ley</p>
+        <p style="font-size: 11px; color: #888; margin: 0;">SISTEMA DE LEY</p>
         <div id="lirieWord" class="word">---</div>
-        <p id="spanishMeaning" class="meaning">Escribe para empezar</p>
-        <button class="copy-btn" id="copyBtn" onclick="copiarTraduccion()">Copiar Lirié</button>
+        <div id="fichaContainer" class="ficha-tecnica">
+            <div class="ficha-header">
+                <span id="fNombre" style="font-weight: bold; color: white;"></span>
+                <span id="fRango" class="badge"></span>
+            </div>
+            <p class="stat"><b>Elemento:</b> <span id="fElemento"></span></p>
+            <p class="stat"><b>Habilidad:</b> <span id="fHabilidad"></span></p>
+            <p class="stat"><b>Origen:</b> <span id="fOrigen"></span></p>
+        </div>
+        <button class="copy-btn" id="copyBtn" onclick="copiarTraduccion()">Copiar</button>
     </div>
 
-    <div class="footer">
-        SISTEMA AMSTARSH | TRADUCTOR DE ORACIONES<br>
-        PROYECTO MA-LUMIN | SIN PUBLICIDAD
-    </div>
+    <div class="footer">SISTEMA MA-LUMIN v1.4 | PROTECTORES REGISTRADOS</div>
 </div>
 
 <script>
+    // BASE DE DATOS DE FICHAS TÉCNICAS (Aquí irán tus 100 Amstarsh)
+    const fichasAmstarsh = {
+        "max maximilian": {
+            nombre: "Max Maximilian",
+            rango: "Protector 16",
+            elemento: "Oscuridad",
+            habilidad: "Vacío Eterno",
+            origen: "Nacimiento",
+            estilo: "dark-badge"
+        },
+        "alistar": {
+            nombre: "Alistar",
+            rango: "Amstarsh",
+            elemento: "Hielo",
+            habilidad: "Cero Absoluto",
+            origen: "Tierras del Norte",
+            estilo: "ice-badge"
+        }
+    };
+
     const diccionario = [
-        {es: "dios", li: "ELOH", mod: "Sagrado"},
-        {es: "palabra", li: "LOG", mod: "Sagrado"},
-        {es: "luz", li: "AUR", mod: "Sagrado"},
-        {es: "pacto", li: "BER", mod: "Sagrado"},
-        {es: "verdad", li: "EMET", mod: "Sagrado"},
-        {es: "fuego", li: "ESH", mod: "Elementos"},
-        {es: "agua", li: "MAY", mod: "Elementos"},
-        {es: "hielo", li: "KERET", mod: "Elementos"},
-        {es: "viento", li: "RUAH", mod: "Elementos"},
-        {es: "oscuridad", li: "NOX", mod: "Elementos"},
-        {es: "protector", li: "AMSTARSH", mod: "Jerarquía"},
-        {es: "maestro", li: "BVAR", mod: "Jerarquía"},
-        {es: "rey", li: "MALK", mod: "Civilización"},
-        {es: "espada", li: "JEREV", mod: "Civilización"},
-        {es: "bvoriam", li: "MENTOR-PRIMO", mod: "Personajes"},
-        {es: "max maximilian", li: "MAX-DARK", mod: "Protecters"},
-        {es: "hola", li: "SHAL", mod: "Social"},
-        {es: "como", li: "KE", mod: "Dudas"},
-        {es: "estas", li: "AYEK", mod: "Estados"},
-        {es: "esta", li: "AYE", mod: "Estados"},
-        {es: "estoy", li: "HAYA", mod: "Estados"},
-        {es: "bien", li: "TOV", mod: "Estados"},
-        {es: "mal", li: "RA", mod: "Estados"},
-        {es: "es", li: "VET", mod: "Gramática"},
-        {es: "un", li: "DA", mod: "Gramática"},
-        {es: "el", li: "HA", mod: "Gramática"},
-        {es: "la", li: "HA", mod: "Gramática"},
-        {es: "y", li: "VE", mod: "Gramática"},
-        {es: "mi", li: "ANI", mod: "Gramática"},
-        {es: "tu", li: "ATA", mod: "Persona"},
-        {es: "yo", li: "ANOKI", mod: "Persona"},
-        {es: "soy", li: "VET-ANI", mod: "Persona"},
-        {es: "ir", li: "LEK", mod: "Acciones"},
-        {es: "venir", li: "BO", mod: "Acciones"},
-        {es: "ver", li: "RA", mod: "Acciones"},
-        {es: "amor", li: "AHAV", mod: "Sentimientos"},
-        {es: "paz", li: "SHALOM", mod: "Sentimientos"},
-        {es: "fuerte", li: "AZ", mod: "Cualidades"},
-        {es: "hijo", li: "BEN", mod: "Familia"},
-        {es: "siempre", li: "OLAM", mod: "Tiempo"},
-        {es: "gracias", li: "TODA", mod: "Social"}
+        {es: "hola", li: "SHAL"},
+        {es: "protector", li: "AMSTARSH"},
+        {es: "hielo", li: "KERET"},
+        {es: "oscuridad", li: "NOX"},
+        {es: "maestro", li: "BVAR"},
+        {es: "soy", li: "VET-ANI"}
+        // ... (puedes seguir pegando tu diccionario masivo aquí)
     ];
 
     function buscar() {
-        const query = document.getElementById('searchInput').value.trim();
+        const query = document.getElementById('searchInput').value.trim().toLowerCase();
         const displayLi = document.getElementById('lirieWord');
-        const displayEs = document.getElementById('spanishMeaning');
-        const statusLabel = document.getElementById('statusLabel');
+        const ficha = document.getElementById('fichaContainer');
         
         if (query === "") {
-            statusLabel.innerText = "Traducción de Ley";
             displayLi.innerText = "---";
-            displayEs.innerText = "Escribe para empezar";
+            ficha.style.display = "none";
             return;
         }
 
-        const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const palabrasInput = query.split(/\s+/);
-        let resultadoLirie = [];
-        let modulosUsados = new Set();
-
-        palabrasInput.forEach(palabra => {
-            const encontrado = diccionario.find(item => limpiar(item.es) === limpiar(palabra));
-            if (encontrado) {
-                resultadoLirie.push(encontrado.li);
-                modulosUsados.add(encontrado.mod);
-            } else {
-                resultadoLirie.push(`(${palabra})`);
-            }
-        });
-
-        statusLabel.innerText = "Oración Lirié";
-        displayLi.innerText = resultadoLirie.join(" ");
-        const mods = Array.from(modulosUsados);
-        displayEs.innerText = mods.length > 0 ? "Módulos: " + mods.join(", ") : "Sin módulos";
+        // 1. BUSCAR EN FICHAS TÉCNICAS
+        if (fichasAmstarsh[query]) {
+            const f = fichasAmstarsh[query];
+            displayLi.innerText = "FICHA DETECTADA";
+            ficha.style.display = "block";
+            document.getElementById('fNombre').innerText = f.nombre;
+            document.getElementById('fRango').innerText = f.rango;
+            document.getElementById('fRango').className = "badge " + f.estilo;
+            document.getElementById('fElemento').innerText = f.elemento;
+            document.getElementById('fHabilidad').innerText = f.habilidad;
+            document.getElementById('fOrigen').innerText = f.origen;
+        } else {
+            // 2. SI NO ES FICHA, BUSCAR TRADUCCIÓN
+            ficha.style.display = "none";
+            const limpiar = (t) => t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const palabras = query.split(/\s+/);
+            let res = palabras.map(p => {
+                const e = diccionario.find(item => limpiar(item.es) === limpiar(p));
+                return e ? e.li : `(${p})`;
+            });
+            displayLi.innerText = res.join(" ");
+        }
     }
 
     function copiarTraduccion() {
         const texto = document.getElementById('lirieWord').innerText;
-        if (texto === "---") return;
-        
-        navigator.clipboard.writeText(texto).then(() => {
-            const btn = document.getElementById('copyBtn');
-            const originalText = btn.innerText;
-            btn.innerText = "¡Copiado!";
-            btn.style.background = "var(--gold)";
-            btn.style.color = "black";
-            
-            setTimeout(() => {
-                btn.innerText = originalText;
-                btn.style.background = "transparent";
-                btn.style.color = "var(--gold)";
-            }, 1000);
-        });
+        navigator.clipboard.writeText(texto);
     }
 </script>
-
 </body>
 </html>
